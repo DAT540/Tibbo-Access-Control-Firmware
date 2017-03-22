@@ -49,40 +49,42 @@ sub event_add(source as EN_EVENT_SOURCE, evnt as EN_EVENT_EVENT, addition as str
 	rtc.getdata(dcount,mcount,sec)
 	td_to_str(time_req,dcount,mcount,sec,0)	' Events stored in UTC time zone
 
-	agg_date_time_formating(time_req, EN_TBL_DT_ALL, EN_AGG_GET)
-	event_source_encode(source, ssource)
-	event_event_encode(evnt, sevent)
-	event_data = chr(AGG_COMMAND_START) + "M" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR)
-		+ "E" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + "ACE" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR)
-		+ "1" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) 
-		+ chr(AGG_ELEMENT_START) + "R"+chr(AGG_ELEMENT_NAME_VALUE_SEPARATOR)
-		+ chr(AGG_ELEMENT_START) + time_req + chr(AGG_ELEMENT_END) 
-		+ chr(AGG_ELEMENT_START) + "ACE" + chr(AGG_ELEMENT_END) 
-		+ chr(AGG_ELEMENT_START) + ssource + chr(AGG_ELEMENT_END)
-		+ chr(AGG_ELEMENT_START) + sevent + chr(AGG_ELEMENT_END)
-		+ chr(AGG_ELEMENT_START) + addition + chr(AGG_ELEMENT_END)
-		+ chr(AGG_ELEMENT_START) + extra + chr(AGG_ELEMENT_END) + chr(AGG_ELEMENT_END)
-		+ chr(AGG_COMMAND_END)
-		agg_data_send(event_data)
+	#if EVENTS_STANDART = 0
+		agg_date_time_formating(time_req, EN_TBL_DT_ALL, EN_AGG_GET)
+		event_source_encode(source, ssource)
+		event_event_encode(evnt, sevent)
+		event_data = chr(AGG_COMMAND_START) + "M" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR)
+			+ "E" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + "ACE" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR)
+			+ "1" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) 
+			+ chr(AGG_ELEMENT_START) + "R"+chr(AGG_ELEMENT_NAME_VALUE_SEPARATOR)
+			+ chr(AGG_ELEMENT_START) + time_req + chr(AGG_ELEMENT_END) 
+			+ chr(AGG_ELEMENT_START) + "ACE" + chr(AGG_ELEMENT_END) 
+			+ chr(AGG_ELEMENT_START) + ssource + chr(AGG_ELEMENT_END)
+			+ chr(AGG_ELEMENT_START) + sevent + chr(AGG_ELEMENT_END)
+			+ chr(AGG_ELEMENT_START) + addition + chr(AGG_ELEMENT_END)
+			+ chr(AGG_ELEMENT_START) + extra + chr(AGG_ELEMENT_END) + chr(AGG_ELEMENT_END)
+			+ chr(AGG_COMMAND_END)
+			agg_data_send(event_data)
+	#else
+	'	Standart fire event schema
+		agg_fire_instant_event("root", "ACE", event_data, 2)
 
-''	Standart fire event schema
-'	agg_fire_instant_event("root", "ACE", event_data, 2)
+		tbl_select("ACE","ACE")
 
-'	tbl_select("ACE","ACE")
+		tbl_field_set("DT", time_req)
+		tbl_field_set("AEL", 2)
+		tbl_field_set("DS", "ACE")
+		tbl_field_set("Source", Str(source))
+		tbl_field_set("Event", Str(evnt))
+		tbl_field_set("Addition", addition)
+		tbl_field_set("Extra", extra)
 
-'	tbl_field_set("DT", time_req)
-'	tbl_field_set("AEL", 2)
-'	tbl_field_set("DS", "ACE")
-'	tbl_field_set("Source", Str(source))
-'	tbl_field_set("Event", Str(evnt))
-'	tbl_field_set("Addition", addition)
-'	tbl_field_set("Extra", extra)
+		tbl_record_add("")
 
-'	tbl_record_add("")
-
-'	agg_stored_event_added("ACE")
-'	agg_proc_stored_events()
-
+		agg_stored_event_added("ACE")
+		agg_proc_stored_events()
+	#endif
+	
 end sub
 
 function event_sr_to_ta(direction as EN_SR_DIRECTION_TYPE) as EN_TA_DIRECTION_TYPE
@@ -109,29 +111,31 @@ sub event_time(card_id as string(16), direction as EN_TA_DIRECTION_TYPE)
 	rtc.getdata(dcount,mcount,sec)
 	td_to_str(time_req,dcount,mcount,sec,0)	' Events stored in UTC time zone
 
-	agg_date_time_formating(time_req, EN_TBL_DT_ALL, EN_AGG_GET)
-	event_data = chr(AGG_COMMAND_START) + "M" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR)
-		+ "E" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + "CR" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR)
-		+ "1" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) 
-		+ chr(AGG_ELEMENT_START) + "R"+chr(AGG_ELEMENT_NAME_VALUE_SEPARATOR)
-		+ chr(AGG_ELEMENT_START) + str(direction) + chr(AGG_ELEMENT_END)
-		+ chr(AGG_ELEMENT_START) + card_id + chr(AGG_ELEMENT_END)
-		+ chr(AGG_ELEMENT_START) + time_req + chr(AGG_ELEMENT_END) 
-		+ chr(AGG_ELEMENT_END)
-		+ chr(AGG_COMMAND_END)
-		agg_data_send(event_data)
+	#if EVENTS_STANDART = 0
+		agg_date_time_formating(time_req, EN_TBL_DT_ALL, EN_AGG_GET)
+		event_data = chr(AGG_COMMAND_START) + "M" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR)
+			+ "E" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + "CR" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR)
+			+ "1" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) 
+			+ chr(AGG_ELEMENT_START) + "R"+chr(AGG_ELEMENT_NAME_VALUE_SEPARATOR)
+			+ chr(AGG_ELEMENT_START) + str(direction) + chr(AGG_ELEMENT_END)
+			+ chr(AGG_ELEMENT_START) + card_id + chr(AGG_ELEMENT_END)
+			+ chr(AGG_ELEMENT_START) + time_req + chr(AGG_ELEMENT_END) 
+			+ chr(AGG_ELEMENT_END)
+			+ chr(AGG_COMMAND_END)
+			agg_data_send(event_data)
+	#else
+	'	Standart fire event schema
+		tbl_select("CR","CR")
 
-''	Standart fire event schema
-'	tbl_select("CR","CR")
+		tbl_field_set("type", Str(direction))
+		tbl_field_set("id", card_id)
+		tbl_field_set("date", time_req)
 
-'	tbl_field_set("type", Str(direction))
-'	tbl_field_set("id", card_id)
-'	tbl_field_set("date", time_req)
+		tbl_record_add("")
 
-'	tbl_record_add("")
-
-'	agg_stored_event_added("CR")
-'	agg_proc_stored_events()
+		agg_stored_event_added("CR")
+		agg_proc_stored_events()
+	#endif
 
 end sub
 

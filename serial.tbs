@@ -36,7 +36,7 @@ sub serial_init()
 		if readers(i).num > 0 then
 			serial_init_io(i)
 			ser.num = serial_channel(readers(i).num - 1)
-			ser.mode = PL_SER_MODE_CLOCKDATA 'PL_SER_MODE_WIEGAND 
+			ser.mode = PL_SER_MODE_WIEGAND 
 			ser.interchardelay = 4
 			ser.autoclose = YES
 			ser.enabled = NO
