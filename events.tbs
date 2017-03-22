@@ -1,0 +1,240 @@
+include "global.tbh"
+
+dim events_enable(12) as boolean
+
+declare sub event_source_encode(source as EN_EVENT_SOURCE, byref s_value as string(50))
+declare sub event_event_encode(evn as EN_EVENT_EVENT, byref s_value as string(50))
+
+sub event_init()
+	
+	events_enable(EN_ES_READER) = val(stg_get("EE",0))
+	events_enable(EN_ES_INPUT) = val(stg_get("EI",0))
+	events_enable(EN_ES_RELAY) = val(stg_get("ER",0))
+	events_enable(EN_ES_STATE) = val(stg_get("EX",0))
+	events_enable(EN_ES_ACL) = val(stg_get("EA",0))
+	events_enable(EN_ES_AGG) = val(stg_get("EG",0))
+	events_enable(EN_ES_DEVICE) = val(stg_get("EV",0))
+	events_enable(EN_ES_STATE_STOR) = val(stg_get("EW",0))
+	events_enable(EN_ES_DOOR) = val(stg_get("ED",0))
+	events_enable(EN_ES_TURNSTYLE) = val(stg_get("EU",0))
+	events_enable(EN_ES_APB) = val(stg_get("PB",0))
+	events_enable(0) = val(stg_get("ET",0))
+
+end sub
+
+sub event_apb(cmd as EN_EVENT_APB_CMD, card as string(16), reader as byte, date as string(17))
+
+	dim event_data as string
+	dim time_req as string(23)
+	
+	time_req = date
+	agg_date_time_formating(time_req, EN_TBL_DT_ALL, EN_AGG_GET)
+	event_data = chr(AGG_ELEMENT_START) + "R" + chr(AGG_ELEMENT_NAME_VALUE_SEPARATOR) + chr(AGG_ELEMENT_START) + str(cmd) + chr(AGG_ELEMENT_END)+ chr(AGG_ELEMENT_START) + card + chr(AGG_ELEMENT_END) + chr(AGG_ELEMENT_START) + str(reader) + chr(AGG_ELEMENT_END) + chr(AGG_ELEMENT_START) + time_req + chr(AGG_ELEMENT_END) + chr(AGG_ELEMENT_END) 
+	agg_fire_instant_event("root", "APB", event_data, 6)
+
+end sub
+
+sub event_add(source as EN_EVENT_SOURCE, evnt as EN_EVENT_EVENT, addition as string(50), extra as string(50))
+
+	if events_enable(source) = 0 then exit sub
+
+	dim dcount,mcount as word
+	dim sec as byte
+	dim time_req as string(23)
+	dim event_data as string
+	dim ssource as string(20)
+	dim sevent as string(20)
+
+	' Get time for event
+	rtc.getdata(dcount,mcount,sec)
+	td_to_str(time_req,dcount,mcount,sec,0)	' Events stored in UTC time zone
+
+	agg_date_time_formating(time_req, EN_TBL_DT_ALL, EN_AGG_GET)
+	event_source_encode(source, ssource)
+	event_event_encode(evnt, sevent)
+	event_data = chr(AGG_COMMAND_START) + "M" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR)
+		+ "E" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + "ACE" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR)
+		+ "1" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) 
+		+ chr(AGG_ELEMENT_START) + "R"+chr(AGG_ELEMENT_NAME_VALUE_SEPARATOR)
+		+ chr(AGG_ELEMENT_START) + time_req + chr(AGG_ELEMENT_END) 
+		+ chr(AGG_ELEMENT_START) + "ACE" + chr(AGG_ELEMENT_END) 
+		+ chr(AGG_ELEMENT_START) + ssource + chr(AGG_ELEMENT_END)
+		+ chr(AGG_ELEMENT_START) + sevent + chr(AGG_ELEMENT_END)
+		+ chr(AGG_ELEMENT_START) + addition + chr(AGG_ELEMENT_END)
+		+ chr(AGG_ELEMENT_START) + extra + chr(AGG_ELEMENT_END) + chr(AGG_ELEMENT_END)
+		+ chr(AGG_COMMAND_END)
+		agg_data_send(event_data)
+
+''	Standart fire event schema
+'	agg_fire_instant_event("root", "ACE", event_data, 2)
+
+'	tbl_select("ACE","ACE")
+
+'	tbl_field_set("DT", time_req)
+'	tbl_field_set("AEL", 2)
+'	tbl_field_set("DS", "ACE")
+'	tbl_field_set("Source", Str(source))
+'	tbl_field_set("Event", Str(evnt))
+'	tbl_field_set("Addition", addition)
+'	tbl_field_set("Extra", extra)
+
+'	tbl_record_add("")
+
+'	agg_stored_event_added("ACE")
+'	agg_proc_stored_events()
+
+end sub
+
+function event_sr_to_ta(direction as EN_SR_DIRECTION_TYPE) as EN_TA_DIRECTION_TYPE
+	
+	select case direction
+	case EN_SR_DT_IN:
+		event_sr_to_ta = EN_TA_DT_IN
+	case EN_SR_DT_OUT:
+		event_sr_to_ta = EN_TA_DT_OUT
+	end select
+
+end function
+
+sub event_time(card_id as string(16), direction as EN_TA_DIRECTION_TYPE)
+	
+	dim dcount, mcount as word
+	dim sec as byte
+	dim time_req as string(23)
+	dim event_data as string
+
+	if events_enable(0) = 0 then exit sub
+
+	' Get time for event
+	rtc.getdata(dcount,mcount,sec)
+	td_to_str(time_req,dcount,mcount,sec,0)	' Events stored in UTC time zone
+
+	agg_date_time_formating(time_req, EN_TBL_DT_ALL, EN_AGG_GET)
+	event_data = chr(AGG_COMMAND_START) + "M" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR)
+		+ "E" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + "CR" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR)
+		+ "1" + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) + chr(AGG_COMMAND_PARAMETERS_SEPARATOR) 
+		+ chr(AGG_ELEMENT_START) + "R"+chr(AGG_ELEMENT_NAME_VALUE_SEPARATOR)
+		+ chr(AGG_ELEMENT_START) + str(direction) + chr(AGG_ELEMENT_END)
+		+ chr(AGG_ELEMENT_START) + card_id + chr(AGG_ELEMENT_END)
+		+ chr(AGG_ELEMENT_START) + time_req + chr(AGG_ELEMENT_END) 
+		+ chr(AGG_ELEMENT_END)
+		+ chr(AGG_COMMAND_END)
+		agg_data_send(event_data)
+
+''	Standart fire event schema
+'	tbl_select("CR","CR")
+
+'	tbl_field_set("type", Str(direction))
+'	tbl_field_set("id", card_id)
+'	tbl_field_set("date", time_req)
+
+'	tbl_record_add("")
+
+'	agg_stored_event_added("CR")
+'	agg_proc_stored_events()
+
+end sub
+
+sub event_source_encode(source as EN_EVENT_SOURCE, byref s_value as string(50))
+
+	select case source
+	case EN_ES_UNKNOWN:
+		s_value = "UNKNOWN"
+		
+	case EN_ES_READER:
+		s_value = "READER"
+		
+	case EN_ES_INPUT:
+		s_value = "INPUT"
+		
+	case EN_ES_RELAY:
+		s_value = "RELAY"
+		
+	case EN_ES_STATE:
+		s_value = "STATE"
+		
+	case EN_ES_ACL:
+		s_value = "ACL"
+		
+	case EN_ES_AGG:
+		s_value = "AGG"
+		
+	case EN_ES_DEVICE:
+		s_value = "DEVICE"
+		
+	case EN_ES_STATE_STOR:
+		s_value = "STATE STORE"
+		
+	case EN_ES_DOOR:
+		s_value = "DOOR"
+		
+	case EN_ES_TURNSTYLE:
+		s_value = "TURNSTILE"
+		
+	case EN_ES_APB:
+		s_value = "APB"
+		
+	end select
+
+end sub
+
+sub event_event_encode(evn as EN_EVENT_EVENT, byref s_value as string(50))
+
+	select case evn
+	case EN_EE_UNKNOWN:
+		s_value = "UNKNOWN"
+		
+	case EN_EE_OPEN:
+		s_value = "OPEN"
+		
+	case EN_EE_CLOSE:
+		s_value = "CLOSE"
+		
+	case EN_EE_FUNCTION:
+		s_value = "FUNCTION"
+		
+	case EN_EE_PIN_REQUEST:
+		s_value = "REQUEST"
+		
+	case EN_EE_PIN_UNREQUEST:
+		s_value = "UNREQUEST"
+		
+	case EN_EE_CARD_READED:
+		s_value = "CARD#"
+		
+	case EN_EE_SET:
+		s_value = "SET"
+		
+	case EN_EE_UNSET:
+		s_value = "RESET"
+		
+	case EN_EE_DENY:
+		s_value = "DENIED"
+		
+	case EN_EE_GRANTED:
+		s_value = "GRANTED"
+		
+	case EN_EE_POWERON:
+		s_value = "POWER ON"
+		
+	case EN_EE_RESTORED_STATE:
+		s_value = "RESTORED STATE"
+		
+	case EN_EE_DOOR_OPEN:
+		s_value = "DOOR OPEN"
+		
+	case EN_EE_DOOR_CLOSE:
+		s_value = "DOOR CLOSE"
+		
+	case EN_EE_TURNSTYLE_TURNIN:
+		s_value = "TURNSTILE TURNED IN"
+		
+	case EN_EE_TURNSTYLE_TURNOUT:
+		s_value = "TURNSTILE TURNED OUT"
+		
+	case EN_EE_APBREQUEST:
+		s_value = "APB request"
+		
+	end select
+
+end sub

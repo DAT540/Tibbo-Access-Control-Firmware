@@ -1,0 +1,50 @@
+
+enum EN_EVENT_SOURCE
+	EN_ES_UNKNOWN,
+	EN_ES_READER,
+	EN_ES_INPUT,
+	EN_ES_RELAY,
+	EN_ES_STATE,
+	EN_ES_ACL,
+	EN_ES_AGG,
+	EN_ES_DEVICE,
+	EN_ES_STATE_STOR,
+	EN_ES_DOOR,
+	EN_ES_TURNSTYLE,
+	EN_ES_APB
+end enum
+
+enum EN_EVENT_EVENT
+	EN_EE_UNKNOWN,
+	EN_EE_OPEN,
+	EN_EE_CLOSE,
+	EN_EE_FUNCTION,
+	EN_EE_PIN_REQUEST,
+	EN_EE_PIN_UNREQUEST,
+	EN_EE_CARD_READED,
+	EN_EE_SET
+	EN_EE_UNSET,
+	EN_EE_DENY,
+	EN_EE_GRANTED,
+	EN_EE_POWERON,
+	EN_EE_RESTORED_STATE,
+	EN_EE_DOOR_OPEN,
+	EN_EE_DOOR_CLOSE,
+	EN_EE_TURNSTYLE_TURNIN,
+	EN_EE_TURNSTYLE_TURNOUT
+	EN_EE_APBREQUEST
+end enum
+
+enum EN_EVENT_APB_CMD
+	EN_EE_REQUEST = 0,
+	EN_EE_CHANGEAREA = 1
+end enum
+
+declare events_enable(12) as boolean
+
+declare sub event_init()
+
+declare sub event_add(source as EN_EVENT_SOURCE, evnt as EN_EVENT_EVENT, addition as string(50), extra as string(50))
+declare sub event_time(card_id as string(16), direction as EN_TA_DIRECTION_TYPE)
+declare sub event_apb(cmd as EN_EVENT_APB_CMD, card as string(16), reader as byte, date as string(17))
+declare function event_sr_to_ta(direction as EN_SR_DIRECTION_TYPE) as EN_TA_DIRECTION_TYPE
