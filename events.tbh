@@ -40,7 +40,7 @@ enum EN_EVENT_APB_CMD
 	EN_EE_CHANGEAREA = 1
 end enum
 
-#define EVENTS_STANDART = 0
+#define EVENTS_STANDART 0
 
 declare events_enable(12) as boolean
 
