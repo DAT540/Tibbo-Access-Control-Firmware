@@ -146,7 +146,7 @@ sub serial_timer()
 						rtc.getdata(dcount,mcount,sec)
 						td_to_str(time_req,dcount,mcount,sec,0)
 						event_apb(EN_EE_CHANGEAREA, readers(i).card_id, i+1, time_req)
-						event_add(EN_ES_APB, EN_EE_GRANTED, "APB timeout", readers(i).card_id)
+						event_add(EN_ES_APB, EN_EE_GRANTED, "Timeout", readers(i).card_id)
 					else
 						' TimeOut Deny
 						readers(i).state = EN_SR_DENIED
@@ -157,7 +157,7 @@ sub serial_timer()
 
 						serial_beep_start(i)
 						readers(i).delay_beep = 5
-						event_add(EN_ES_APB, EN_EE_DENY, "APB timeout", readers(i).card_id)
+						event_add(EN_ES_APB, EN_EE_DENY, "Timeout", readers(i).card_id)
 					end if
 				end if
 				
@@ -204,7 +204,7 @@ function serial_apb_result(reader as byte, result as boolean, lastTime as string
 				event_time(readers(reader).card_id, event_sr_to_ta(readers(reader).direction))
 			end if
 
-			event_add(EN_ES_APB, EN_EE_GRANTED, "APB success", readers(reader).card_id)
+			event_add(EN_ES_APB, EN_EE_GRANTED, "Success", readers(reader).card_id)
 			
 			relay_open_channel(readers(reader).relayChannel)
 		else
@@ -220,7 +220,7 @@ function serial_apb_result(reader as byte, result as boolean, lastTime as string
 				serial_beep_start(reader)
 				readers(reader).delay_beep = 5
 
-				event_add(EN_ES_APB, EN_EE_DENY, "APB deny (HARD)", readers(reader).card_id)
+				event_add(EN_ES_APB, EN_EE_DENY, "Deny (HARD)", readers(reader).card_id)
 				
 			case EN_AC_APB_SOFT:
 				readers(reader).state = EN_SR_GRANTED
@@ -236,8 +236,8 @@ function serial_apb_result(reader as byte, result as boolean, lastTime as string
 				rtc.getdata(dcount,mcount,sec)
 				td_to_str(timereq,dcount,mcount,sec,0)
 				event_apb(EN_EE_CHANGEAREA, readers(reader).card_id, reader+1, timereq)
-				event_add(EN_ES_APB, EN_EE_GRANTED, "APB timeout", readers(reader).card_id)
-				event_add(EN_ES_APB, EN_EE_GRANTED, "APB deny (SOFT)", readers(reader).card_id)
+				event_add(EN_ES_APB, EN_EE_GRANTED, "Timeout", readers(reader).card_id)
+				event_add(EN_ES_APB, EN_EE_GRANTED, "Deny (SOFT)", readers(reader).card_id)
 				
 				relay_open_channel(readers(reader).relayChannel)
 				
@@ -267,7 +267,7 @@ function serial_apb_result(reader as byte, result as boolean, lastTime as string
 					rtc.getdata(dcount,mcount,sec)
 					td_to_str(timereq,dcount,mcount,sec,0)
 					event_apb(EN_EE_CHANGEAREA, readers(reader).card_id, reader+1, timereq)
-					event_add(EN_ES_APB, EN_EE_GRANTED, "APB deny (TIMED)", readers(reader).card_id)
+					event_add(EN_ES_APB, EN_EE_GRANTED, "Deny (TIMED)", readers(reader).card_id)
 					
 					relay_open_channel(readers(reader).relayChannel)
 				else
@@ -281,7 +281,7 @@ function serial_apb_result(reader as byte, result as boolean, lastTime as string
 					serial_beep_start(reader)
 					readers(reader).delay_beep = 5
 
-					event_add(EN_ES_APB, EN_EE_DENY, "APB deny (TIMED)", readers(reader).card_id)
+					event_add(EN_ES_APB, EN_EE_DENY, "Deny (TIMED)", readers(reader).card_id)
 				end if
 				
 				

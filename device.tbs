@@ -327,54 +327,65 @@ function callback_agg_device_function(byref function_name as string ,byref conte
 '|	AccessControl									|
 '----------------------------------------------------
 	case "EmgSet":
-		function_output=""
+		function_output = ""
 		agg_record_encode(function_output, Str(function_emergency_set()))
-		callback_agg_device_function=OK
+		callback_agg_device_function = OK
 		
 	case "EmgReset":
-		function_output=""
+		function_output = ""
 		agg_record_encode(function_output, Str(function_emergency_reset()))
-		callback_agg_device_function=OK
-		
+		callback_agg_device_function = OK
 	case "BlockSet":
-		function_output=""
+		function_output = ""
 		agg_record_encode(function_output, Str(function_block_set()))
-		callback_agg_device_function=OK
+		callback_agg_device_function = OK
 		
 	case "BlockReset":
-		function_output=""
+		function_output = ""
 		agg_record_encode(function_output, Str(function_block_reset()))
-		callback_agg_device_function=OK
+		callback_agg_device_function = OK
 		
 	case "ChOpen":
-		channel = val(agg_record_decode(function_input,0))
-		function_output=""
+		channel = val(agg_record_decode(function_input, 0))
+		function_output = ""
 		agg_record_encode(function_output, Str(function_channel_open(channel)))
-		callback_agg_device_function=OK
+		callback_agg_device_function = OK
 		
 	case "ChOpenLong":
-		channel = val(agg_record_decode(function_input,0))
-		function_output=""
+		channel = val(agg_record_decode(function_input, 0))
+		function_output = ""
 		agg_record_encode(function_output, Str(function_channel_open_long(channel)))
-		callback_agg_device_function=OK
+		callback_agg_device_function = OK
 		
 	case "ChCloseLong":
-		channel = val(agg_record_decode(function_input,0))
-		function_output=""
+		channel = val(agg_record_decode(function_input, 0))
+		function_output = ""
 		agg_record_encode(function_output, Str(function_channel_close_long(channel)))
-		callback_agg_device_function=OK
+		callback_agg_device_function = OK
 
 	case "diskFormat":
-		fd.format(fd.availableflashspace,16)
+		fd.format(fd.availableflashspace, 16)
 		fd.mount()
-		callback_agg_device_function=OK
+		callback_agg_device_function = OK
 		
 	case "apbfunction":
 		'APB result form AGG
-		function_output=""
-		agg_record_decode(function_input,2)
+		function_output = ""
+		agg_record_decode(function_input, 2)
 		agg_record_encode(function_output, Str(serial_apb_result(val(agg_record_decode(function_input,0))-1, val(agg_record_decode(function_input,1)), agg_record_decode(function_input,2))))
-		callback_agg_device_function=OK
+		callback_agg_device_function = OK
+
+	case "confirmEvent":
+		dim id as string
+		dim idi as long
+		id = agg_record_decode(function_input, 0)
+		agg_record_encode(function_output, id)
+		idi = lval(id)
+		' Array Events Confirm
+		event_confirm_agg(idi)
+		' AGG Table Events Confirm
+		agg_event_confirm(idi)
+		callback_agg_device_function = OK
 '----------------------------------------------------
 '|	end AccessControl								|
 '----------------------------------------------------

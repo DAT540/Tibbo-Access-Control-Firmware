@@ -37,8 +37,8 @@
 >>B4	S	<R=<B4><<<B4><I><V=<L=0 2>><S=<Disabled=0><Enabled=1>>><M=1><X=1>><Temporary Out><1><1><^><remote|Buttons><^>>
 >>AB	S	<R=<AB><<<AB><I><V=<L=0 1>><S=<Disabled=0><Enabled=1>>><M=1><X=1>><Activate Button Schedule><1><1><^><remote|Buttons><^>>
 >>readers	T	<R=<readers><<<name><S><V=<L=0 5>>><<channel><I><V=<L=0 4>>><<direction><I><S=<NOT_APPLICABLE=0><IN=1><OUT=2>><V=<L=0 2>><A=0>><<relayChannel><I><S=<NONE=0><1=1><2=2><1,2=3><3=4><1,3=5><2,3=6><1,2,3=7><4=8><1,4=9><2,4=10><1,2,4=11><3,4=12><1,3,4=13><2,3,4=14><1,2,3,4=15>><V=<L=0 20>><A=0>><<enabled><I><V=<L=0 1>><A=1>><<description><S><F=N><V=<L=0 16>>><M=0><X=2>><Readers><1><1><^><remote|Access Control><^>>
->>cards	T	<R=<cards><<<id><S><V=<L=0 16>>><<hash><I><V=<L=0 255>>><<name><S><F=N><V=<L=0 20>>><<actTime><D><A=2000-01-01 01:01:01.001>><<deactTime><D><A=2000-01-01 01:01:01.001>><<supervisor><S><F=N><V=<L=0 16>>><<acl><S><V=<L=0 16>>><M=0><X=10000>><Cards><1><1><^><remote|Access Control><^>>
->>acl	T	<R=<acl><<<acl><S><V=<L=0 16>>><<reader><I><V=<L=0 4>><A=0>><<timezone><S><V=<L=0 16>>><<policy><I><S=<Permit=0><Deny=1>><V=<L=0 1>><A=1>><<confirm><I><S=<false=0><true=1>><V=<L=0 1>><A=0>><M=0><X=1000>><ACL><1><1><^><remote|Access Control><^>>
+>>cards	T	<R=<cards><<<index><L><V=<L=0 65535>><A=0>><<id><S><V=<L=0 16>>><<hash><I><V=<L=0 255>>><<name><S><V=<L=0 12>>><<actYear><I><V=<L=0 99>><A=0>><<actMonth><I><V=<L=1 12>><A=1>><<actDay><I><V=<L=1 31>><A=1>><<actHour><I><V=<L=0 23>><A=0>><<actMin><I><V=<L=0 59>><A=0>><<deactYear><I><V=<L=0 99>><A=0>><<deactMonth><I><V=<L=1 12>><A=1>><<deactDay><I><V=<L=1 31>><A=1>><<deactHour><I><V=<L=0 23>><A=0>><<deactMin><I><V=<L=0 59>><A=0>><<supervisor><L><V=<L=0 65535>><A=0>><<acl><L><V=<L=0 65535>><A=0>><M=0><X=10000>><Cards><1><1><^><remote|Access Control><^>>
+>>acl	T	<R=<acl><<<index><L><V=<L=0 65535>><A=0>><<acl><S><V=<L=0 16>>><<reader><I><V=<L=0 4>><A=0>><<timezone><S><V=<L=0 16>>><<policy><I><V=<L=0 1>><A=1>><<confirm><I><V=<L=0 1>><A=0>><M=0><X=1000>><ACL><1><1><^><remote|Access Control><^>>
 >>tzones	T	<R=<tzones><<<name><S><V=<L=0 16>>><<fromTime><D><F=N><A=2000-01-01 01:01:01.001>><<toTime><D><F=N><A=2000-01-01 01:01:01.001>><<fromYear><L><F=N><V=<L=2000 2099>><A=2016>><<toYear><L><F=N><V=<L=2000 2099>><A=2016>><<months><L><V=<L=0 65535>><A=0>><<monthDays><L><V=<L=0 2147483647>><A=0>><<weekDays><I><V=<L=0 255>><A=0>><M=0><X=200>><Time Zones><1><1><^><remote|Access Control><^>>
 >>RI	S	<R=<RI><<<0><I><V=<L=0 100>>><<1><I><V=<L=0 100>>><<2><I><V=<L=0 100>>><<3><I><V=<L=0 100>>><M=1><X=1>><Relays Impulse Length><1><1><^><remote|Access Control><^>>
 >>RS	S	<R=<RS><<<0><I><S=<NORMAL_OPEN=0><NORMAL_CLOSE=1>><V=<L=0 1>>><<1><I><S=<NORMAL_OPEN=0><NORMAL_CLOSE=1>><V=<L=0 1>>><<2><I><S=<NORMAL_OPEN=0><NORMAL_CLOSE=1>><V=<L=0 1>>><<3><I><S=<NORMAL_OPEN=0><NORMAL_CLOSE=1>><V=<L=0 1>>><M=1><X=1>><Relays Normal State><1><1><^><remote|Access Control><^>>
@@ -72,6 +72,7 @@
 >>AY	S	<R=<AY><<<AY><I><S=<Hard=0><Soft=1><Timed=2>><V=<L=0 2>>><M=1><X=1>><APB Type><1><1><^><remote|APB><^>>
 >>AI	S	<R=<AI><<<AI><I><V=<L=0 255>>><M=1><X=1>><APB TimeOut for Timed Mode><1><1><^><remote|APB><^>>
 >>EX	S	<R=<EX><<<EX><I><V=<L=0 1>>><M=1><X=1>><Generate Events for STATEs><1><1><^><remote|Events><^>>
+>>AU_BUT	T	<R=<AU_BUT><<<time><D><A=2000-01-01 00:00:00.000>><<act><I><V=<L=0 15>><A=0>><M=0><X=20>><Button Schedule><1><1><^><remote|Buttons><^>>
 ==functions	root	<R=<hash><<<context><S>><<variable><S>><M=1><X=1>><<<hash><I>><M=1><X=1>><Table Hash><^><^>>
 ~~<R=<finishTable><<<context><S>><<variable><S>><M=1><X=1>><<<hash><I>><M=1><X=1>><Finish Table><^><^>>
 ~~<R=<startTable><<<context><S>><<variable><S>><M=1><X=1>><<M=0><X=0>><Start Table><^><^>>
@@ -95,10 +96,11 @@
 >>ChCloseLong	<R=<ChCloseLong><<<Channel><I><V=<L=0 25>><A=0>><M=1><X=1>><<<status><I><S=<Successful=0><Fail=1>>><M=1><X=1>><Channel - UnHold><^><remote|AccessControl>>
 >>diskFormat	<R=<diskFormat><<M=0><X=0>><<M=0><X=0>><Disk format><^><remote>>
 >>apbfunction	<R=<apbfunction><<<reader><I><A=0>><<result><I><S=<Reject=0><Success=1>><V=<L=0 1>><A=0>><<lastTime><D>><M=1><X=1>><<<status><I><S=<Successful=0><Fail=1>>><M=1><X=1>><apb><^><remote>>
+>>confirmEvent	<R=<confirmEvent><<<id><I>><M=1><X=1>><<<id><I>><M=1><X=1>><confirmEvent><^><remote>>
 ==events	root
->>CR	S2	<R=<CR><<<type><I><S=<IN=0><OUT=1><TEMP_IN=2><TEMP_OUT=3>><D=Event Type>><<id><S><D=Card ID>><<date><D><D=Date>><M=1><X=1>><Card Read><^><2><remote>>
->>ACE	S2	<R=<ACE><<<DT><D>><<DS><S>><<Source><S>><<Event><S>><<Addition><S><F=N>><<Extra><S><F=N>><M=1><X=1>><Access Control Events><^><2><remote>>
+>>CR	S2	<R=<CR><<<type><I><S=<IN=0><OUT=1><TEMP_IN=2><TEMP_OUT=3>><D=Event Type>><<id><S><V=<L=0 16>><D=Card ID>><<date><D><D=Date>><M=1><X=1>><Card Read><^><2><remote>>
 >>APB	I1	<R=<APB><<<cmd><I><S=<Request=0><ChangeArea=1>>><<cardID><S>><<readerID><I>><<date><D>><M=1><X=1>><Anti PassBack Events><^><1><remote>>
+>>ACE	S2	<R=<ACE><<<DT><D>><<DS><S>><<Source><I><S=<UNKNOWN=0><READER=1><INPUT=2><RELAY=3><STATE=4><ACL=5><AGG=6><DEVICE=7><STATE STORE=8><DOOR=9><TURNSTILE=10><APB=11>>><<Event><I><S=<UNKNOWN=0><OPEN=1><CLOSE=2><FUNCTION=3><REQUEST=4><UNREQUEST=5><CARD=6><SET=7><RESET=8><DENIED=9><GRANTED=10><POWER ON=11><RESTORE STATE=12><DOOR OPEN=13><DOOR CLOSE=14><TURNSTILE TURNED IN=15><TURNSTILE TURNED OUT=16><APB REQUEST=17>>><<Addition><S><V=<L=0 12>>><<Extra><S><V=<L=0 16>>><M=1><X=1>><ACE><^><2><remote>>
 #define TBL_TIMESTAMP 1
 #define STG_TIMESTAMP 1
 #define AGG_DESCRIPTOR_FILE "agg.xtxt"
@@ -108,8 +110,8 @@
 #define AGG_DEBUG_PRINT 1
 #define AGG_MAX_NUM_ENTITY_TYPES 4
 #define AGG_MAX_CONTEXT_NAME_LEN 4
-#define AGG_MAX_NUM_SCRIPT_LINES 85
-#define AGG_MAX_SCRIPT_LINE_NAME_LEN 11
+#define AGG_MAX_NUM_SCRIPT_LINES 87
+#define AGG_MAX_SCRIPT_LINE_NAME_LEN 12
 #define AGG_MAX_FUNCTION_NAME_LEN 12
 #define AGG_MAX_NUM_STORED_EVENTS 2
 @@STG_RefPath=settings.xtxt

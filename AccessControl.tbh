@@ -8,7 +8,7 @@ include "display.tbh"
 
 #define ACWARE_VERSION "1.05.01"
 
-#define TRANSACTION_DISABLE 1
+#define TRANSACTION_DISABLE 0
 
 enum EN_AC_RESULT
 	EN_AR_UNKNOWN,
@@ -40,7 +40,7 @@ declare sub ac_init()
 declare sub ac_init_sync()
 declare function ac_get_name_hash(byref card_id as string(16)) as byte
 declare function ac_check_id(byref id as string(16), reader as byte, relayChannel as byte, byref name as string(20)) as EN_AC_RESULT
-declare function ac_check_acl(byref id as string(16), reader as byte, byref time as string(17), byref card_id as string(16)) as EN_AC_RESULT
+declare function ac_check_acl(acl_index as word, reader as byte, byref time as string(17), byref card_id as string(16), byref acl_name as string(16)) as EN_AC_RESULT
 declare function ac_check_timezone(byref timezone as string(16), byref time as string(17)) as boolean
 declare function ac_test_bits(num as char, value as long) as boolean
 declare sub ac_speed_test()

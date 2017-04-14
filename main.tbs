@@ -45,6 +45,59 @@ dim running_light as byte
 dim agg_port as word
 
 '==============================================================================
+function nibble(b as byte) as string
+
+	dim nb as byte
+	
+	nb = b AND 15
+select case nb
+	case 0:
+		nibble = "0"
+	case 1:
+		nibble = "1"
+	case 2:
+		nibble = "2"
+	case 3:
+		nibble = "3"
+	case 4:
+		nibble = "4"
+	case 5:
+		nibble = "5"
+	case 6:
+		nibble = "6"
+	case 7:
+		nibble = "7"
+	case 8:
+		nibble = "8"
+	case 9:
+		nibble = "9"
+	case 10:
+		nibble = "A"
+	case 11:
+		nibble = "B"
+	case 12:
+		nibble = "C"
+	case 13:
+		nibble = "D"
+	case 14:
+		nibble = "E"
+	case 15:
+		nibble = "F"
+case else:
+		nibble = "-"
+end select
+
+end function
+
+function hex_str(b as byte) as string
+	
+	dim v as byte
+	v = b / 16
+	hex_str = nibble(v)
+	hex_str = hex_str + nibble(b)
+	
+end function
+
 sub on_sys_init()
 
 	divider_by_1sec = NO
@@ -126,7 +179,12 @@ sub on_sys_timer()
 	pin_read_state()
 	serial_check_tbl_update
 	serial_timer()
-	
+	event_timer()
+
+#if AGG_TABLE_CONTROL
+	agg_event_timeout()
+#endif
+
 	if flag_update = true then
 		if flag_need_init = true then
 			ac_init()
@@ -456,7 +514,7 @@ end sub
 
 '------------------------------------------------------------------------------
 sub on_sock_data_sent()
-	agg_proc_data_sent()
+	'agg_proc_data_sent()
 end sub
 
 '------------------------------------------------------------------------------
@@ -605,7 +663,9 @@ sub on_ser_data_arrival()
 '----------------------------------------------------
 '|	AccessControl									|
 '----------------------------------------------------
+	agg_stored_event_enable_send = NO
 	serial_data_operate()
+	agg_stored_event_enable_send = YES
 '----------------------------------------------------
 '|	AccessControl									|
 '----------------------------------------------------

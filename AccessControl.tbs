@@ -67,19 +67,74 @@ function ac_get_name_hash(byref card_id as string(16)) as byte
 	
 end function
 
+function ac_check_active_period(req_year as byte, req_month as byte, req_day as byte, req_hour as byte, req_min as byte,
+								from_year as byte, from_month as byte, from_day as byte, from_hour as byte, from_min as byte,
+								to_year as byte, to_month as byte, to_day as byte, to_hour as byte, to_min as byte) as boolean
+	
+	ac_check_active_period = false
+	
+	' Check FROM
+	if req_year < from_year then exit function
+	if req_year = from_year then
+		if req_month < from_month then exit function
+		if req_month = from_month then
+			if req_day < from_day then exit function
+			if req_day = from_day then
+				if req_hour < from_hour then exit function
+				if req_hour = from_hour then
+					if req_min < from_min then exit function
+				end if
+			end if
+		end if
+	end if
+
+	' Check TO
+	if to_year <> 00 or to_month <> 01 or to_day > 02 then
+		if req_year > to_year then exit function
+		if req_year = to_year then
+			if req_month > to_month then exit function
+			if req_month = to_month then
+				if req_day > to_day then exit function
+				if req_day = to_day then
+					if req_hour > to_hour then exit function
+					if req_hour = to_hour then
+						if req_min > to_min then exit function
+					end if
+				end if
+			end if
+		end if
+	end if
+
+	ac_check_active_period = true
+
+end function
+
 ' Check CardID and Reader for access
 function ac_check_id(byref card_id as string(16), reader as byte, relayChannel as byte, byref name as string(20)) as EN_AC_RESULT
 
 	dim card as string
-	dim card_from as string(17)
-	dim card_to as string(17)
-	dim card_super as string(16)
-	dim card_acl as string(16)
-	dim j, f as word
+	dim card_from_year as byte
+	dim card_from_month as byte
+	dim card_from_day as byte
+	dim card_from_hour as byte
+	dim card_from_min as byte
+	dim card_to_year as byte
+	dim card_to_month as byte
+	dim card_to_day as byte
+	dim card_to_hour as byte
+	dim card_to_min as byte
+	dim card_super as word
+	dim card_acl as word
+	dim j as word
+	dim card_flag as boolean
 	dim acl_res as string(16)
 	dim hash as byte
 
-	dim date_req as string(8)
+	dim req_year as byte
+	dim req_month as byte
+	dim req_day as byte
+	dim req_hour as byte
+	dim req_min as byte
 	dim time_req as string(17)
 	dim dcount,mcount as word
 	dim sec as byte
@@ -95,9 +150,13 @@ function ac_check_id(byref card_id as string(16), reader as byte, relayChannel a
 		rtc.getdata(dcount,mcount,sec)
 		td_gmt_to_local(dcount,mcount,tz,ds)
 		td_to_str(time_req,dcount,mcount,sec,0)		' Check date and time in LOCAL time zone
-		date_req = Left(time_req, 8)
+		req_year = val(Mid(time_req, 3, 2))
+		req_month = val(Mid(time_req, 5, 2))
+		req_day = val(Mid(time_req, 7, 2))
+		req_hour = val(Mid(time_req, 9, 2))
+		req_min = val(Mid(time_req, 11, 2))
 		
-		f = 0
+		card_flag = false
 
 		' Find CARD_ID
 		if tbl_select_for_read("cards", "cards") = EN_TBL_STATUS_OK then
@@ -113,28 +172,37 @@ function ac_check_id(byref card_id as string(16), reader as byte, relayChannel a
 						card = tbl_field_get("id")
 						if card = card_id then
 							name = tbl_field_get("name")
-							card_from = tbl_field_get("actTime")
-							card_to = tbl_field_get("deactTime")
+							card_from_year = tbl_field_get("actYear")
+							card_from_month = tbl_field_get("actMonth")
+							card_from_day = tbl_field_get("actDay")
+							card_from_hour = tbl_field_get("actHour")
+							card_from_min = tbl_field_get("actMin")
+							card_to_year = tbl_field_get("deactYear")
+							card_to_month = tbl_field_get("deactMonth")
+							card_to_day = tbl_field_get("deactDay")
+							card_to_hour = tbl_field_get("deactHour")
+							card_to_min = tbl_field_get("deactMin")
 							card_super = tbl_field_get("supervisor")
 							card_acl = tbl_field_get("acl")
 							
-							f = 1
 							' Check active period for card
-							if ((left(card_from, 7) = "2000010" or date_req >= card_from) and (left(card_to, 7) = "2000010" or date_req <= card_to)) then
+							if ac_check_active_period(req_year, req_month, req_day, req_hour, req_min,
+														card_from_year, card_from_month, card_from_day, card_from_hour, card_from_min,
+														card_to_year, card_to_month, card_to_day, card_to_hour, card_to_min) then
 
 								' Card finded!
+								card_flag = true
+								
 								' Check ACL for card
-								select case ac_check_acl(card_acl, reader, time_req, card_id)
+								select case ac_check_acl(card_acl, reader, time_req, card_id, acl_res)
 								case EN_AR_UNKNOWN:
 								case EN_AR_GRANTED:
 									if result = EN_AR_UNKNOWN then
 										result = EN_AR_GRANTED
-										acl_res = card_acl
 									end if
 
 								case EN_AR_RESTRICTED:
 									result = EN_AR_RESTRICTED
-									acl_res = card_acl
 								end select
 
 								tbl_select_for_read("cards", "cards")
@@ -175,10 +243,10 @@ function ac_check_id(byref card_id as string(16), reader as byte, relayChannel a
 		
 			ac_check_id = EN_AR_RESTRICTED
 				
-			if f = 0 then
-				event_add(EN_ES_ACL, EN_EE_DENY, "Token# not found", card_id)
+			if card_flag = false then
+				event_add(EN_ES_ACL, EN_EE_DENY, "ID not found", card_id)
 			else
-				if acl_res = "" then acl_res = "Not active policy"
+				if acl_res = "" then acl_res = "No policy"
 				event_add(EN_ES_ACL, EN_EE_DENY, acl_res, card_id)
 			end if
 
@@ -189,9 +257,9 @@ function ac_check_id(byref card_id as string(16), reader as byte, relayChannel a
 
 end function
 
-function ac_check_acl(byref acl as string(16), reader as byte, byref time as string(17), byref card_id as string(16)) as EN_AC_RESULT
+function ac_check_acl(acl_index as word, reader as byte, byref time as string(17), byref card_id as string(16), byref acl_name as string(16)) as EN_AC_RESULT
 	dim i as word
-	dim f_acl as string(16)
+	dim f_acl as word
 	dim f_reader as byte
 	dim f_timezone as string(16)
 	dim f_policy as byte
@@ -205,7 +273,7 @@ function ac_check_acl(byref acl as string(16), reader as byte, byref time as str
 
 	if tbl_select_for_read("acl", "acl") = EN_TBL_STATUS_OK then
 
-		while tbl_record_find(EN_TBL_RECORD_ACTIVE, acl, "acl", i, EN_TBL_SEARCH_DOWN, PL_FD_FIND_EQUAL) = EN_TBL_STATUS_OK
+		while tbl_record_find(EN_TBL_RECORD_ACTIVE, str(acl_index), "index", i, EN_TBL_SEARCH_DOWN, PL_FD_FIND_EQUAL) = EN_TBL_STATUS_OK
 
 			if tbl_record_read_active(i) = EN_TBL_STATUS_OK then
 
@@ -213,6 +281,7 @@ function ac_check_acl(byref acl as string(16), reader as byte, byref time as str
 				if tbl_field_get("reader") = reader then
 
 					' Finded ACL for CardID & ReaderID
+					acl_name = tbl_field_get("acl")
 					f_reader = tbl_field_get("reader")
 					f_timezone = tbl_field_get("timezone")
 					f_policy = tbl_field_get("policy")
