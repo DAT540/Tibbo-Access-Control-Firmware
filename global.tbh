@@ -22,7 +22,7 @@
 
 '====== Debug Print ======
 #define STG_DEBUG_PRINT 0
-#define DEV_DEBUG_PRINT 1
+#define DEV_DEBUG_PRINT 0
 #define WLN_DEBUG_PRINT 0
 #define GPRS_DEBUG_PRINT 0
 

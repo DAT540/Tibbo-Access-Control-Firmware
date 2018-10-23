@@ -6,7 +6,7 @@ dim readers_table_wait_init as byte
 
 dim param_rhc, param_rhl, param_pos, param_rfc as byte
 
-dim serial_channel as byte(2)
+dim serial_channel as byte(SERIALS_NUMBER)
 
 dim serial_mc as boolean
 dim serial_mc_timer as byte
@@ -24,6 +24,8 @@ sub serial_init()
 	
 	serial_channel(0) = val(stg_get("NW", 0))
 	serial_channel(1) = val(stg_get("NW", 1))
+	serial_channel(2) = val(stg_get("NW", 2))
+	serial_channel(3) = val(stg_get("NW", 3))
 	
 	serial_mc = false
 	serial_mc_timer = 0
@@ -308,7 +310,7 @@ sub serial_data_operate()
 	
 	dim tres as long
 	
-	tres = sys.timercountms
+	'tres = sys.timercountms
 
 	reader = get_reader(ser.num)
 
@@ -494,7 +496,7 @@ sub serial_data_operate()
 	ser.enabled = YES
 
 	#if DEV_DEBUG_PRINT
-		dev_debugprint("Delay: " + str(sys.timercountms - tres) + "ms.")
+		dev_debugprint("End")
 	#endif
 
 end sub
@@ -505,6 +507,8 @@ function get_serial(channel as byte) as byte
 	
 	if serial_channel(0) = channel then get_serial = 0
 	if serial_channel(1) = channel then get_serial = 1
+	if SERIALS_NUMBER > 2 then	if serial_channel(2) = channel then get_serial = 2
+	if SERIALS_NUMBER > 3 then	if serial_channel(3) = channel then get_serial = 3
 
 end function
 
@@ -514,6 +518,8 @@ function get_reader(channel as byte) as byte
 
 	if readers(0).num - 1 = get_serial(channel) then get_reader = 0
 	if readers(1).num - 1 = get_serial(channel) then get_reader = 1
+	if SERIALS_NUMBER > 2 then	if readers(2).num - 1 = get_serial(channel) then get_reader = 2
+	if SERIALS_NUMBER > 3 then	if readers(3).num - 1 = get_serial(channel) then get_reader = 3
 
 end function
 

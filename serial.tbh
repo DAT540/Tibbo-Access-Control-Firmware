@@ -23,16 +23,13 @@ type T_SERIAL_READER
 	direction as EN_SR_DIRECTION_TYPE
 	relayChannel as byte
 	delay_beep as byte
-#if SUPPORTS_DISPLAY
 	state as EN_SR_STATE
 	delay_state as byte
 	card_id as string(16)
 
-#endif
-
 end type
 
-const SERIALS_NUMBER = 2
+const SERIALS_NUMBER = 4
 declare readers_table_wait_init as byte
 declare readers(SERIALS_NUMBER) as T_SERIAL_READER
 declare param_rhc, param_rhl, param_pos, param_rfc as byte

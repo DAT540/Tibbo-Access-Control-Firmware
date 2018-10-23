@@ -23,7 +23,7 @@ declare tbl_hash(10000) as byte
 declare tbl_hash_size as word
 declare tz, ds as string(17)
 
-'	APB variables difine
+'	APB variables define
 enum EN_AC_APB_TYPE
 	EN_AC_APB_HARD = 0,
 	EN_AC_APB_SOFT = 1,

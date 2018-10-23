@@ -105,6 +105,9 @@ sub event_timer()
 								event_ace_send(j).timeout = EVENTS_ACE_TIMEOUT
 								event_ace_send(j).id_agg = agg_get_new_id()
 
+								#if DEV_DEBUG_PRINT
+									dev_debugprint("EventTimer. Send ACE event directly")
+								#endif
 								'Send event
 								event_send_direct_ace(event_ace_send(j).id_agg, event_ace(i_index).time, event_ace(i_index).source, event_ace(i_index).evnt, event_ace(i_index).addition, event_ace(i_index).extra)
 								event_ace(i_index).status = EN_ET_SENDED
@@ -113,6 +116,9 @@ sub event_timer()
 				#if EVENTS_PROCEDURE_TYPE = EVENT_TYPE_DYNAMIC
 					else
 						' Move event to table
+						#if DEV_DEBUG_PRINT
+							dev_debugprint("EventTimer. Move ACE event to table")
+						#endif
 						event_table_ace(event_ace(i_index).time, event_ace(i_index).source, event_ace(i_index).evnt, event_ace(i_index).addition, event_ace(i_index).extra)
 						event_ace(i_index).status = EN_ET_EMPTY
 				#endif
@@ -128,11 +134,17 @@ sub event_timer()
 						if event_ace(i_index).status = EN_ET_SENDED then
 							if agg_link_state = EN_AGG_LINK_STATE_ESTABLISHED then
 								if agg_sychronized = YES then
+									#if DEV_DEBUG_PRINT
+										dev_debugprint("EventTimer. Send ACE event directly")
+									#endif
 									event_send_direct_ace(event_ace_send(j).id_agg, event_ace(i_index).time, event_ace(i_index).source, event_ace(i_index).evnt, event_ace(i_index).addition, event_ace(i_index).extra)
 									event_ace_send(j).timeout = EVENTS_ACE_TIMEOUT
 								end if
 						#if EVENTS_PROCEDURE_TYPE = EVENT_TYPE_DYNAMIC
 							else
+								#if DEV_DEBUG_PRINT
+									dev_debugprint("EventTimer. Move ACE event to table")
+								#endif
 								event_table_ace(event_ace(i_index).time, event_ace(i_index).source, event_ace(i_index).evnt, event_ace(i_index).addition, event_ace(i_index).extra)
 								event_ace(i_index).status = EN_ET_EMPTY
 								event_ace_send(j).index = -1
@@ -175,6 +187,9 @@ sub event_timer()
 								event_cr_send(j).id_agg = agg_get_new_id()
 
 								'Send event
+								#if DEV_DEBUG_PRINT
+									dev_debugprint("EventTimer. Send CR event directly")
+								#endif
 								event_send_direct_cr(event_cr_send(j).id_agg, event_cr(i_index).time, event_cr(i_index).card, event_cr(i_index).direction)
 								event_cr(i_index).status = EN_ET_SENDED
 							end if
@@ -182,6 +197,9 @@ sub event_timer()
 				#if EVENTS_PROCEDURE_TYPE = EVENT_TYPE_DYNAMIC
 					else
 						' Move event to table
+						#if DEV_DEBUG_PRINT
+							dev_debugprint("EventTimer. Move CR event to table")
+						#endif
 						event_table_cr(event_cr(i_index).time, event_cr(i_index).card, event_cr(i_index).direction)
 						event_cr(i_index).status = EN_ET_EMPTY
 				#endif
@@ -197,11 +215,17 @@ sub event_timer()
 						if event_cr(j).status = EN_ET_SENDED then
 							if agg_link_state = EN_AGG_LINK_STATE_ESTABLISHED then
 								if agg_sychronized = YES then
+									#if DEV_DEBUG_PRINT
+										dev_debugprint("EventTimer. Send CR event directly")
+									#endif
 									event_send_direct_cr(event_cr_send(j).id_agg, event_cr(i_index).time, event_cr(i_index).card, event_cr(i_index).direction)
 									event_cr_send(j).timeout = EVENTS_CR_TIMEOUT
 								end if
 						#if EVENTS_PROCEDURE_TYPE = EVENT_TYPE_DYNAMIC
 							else
+								#if DEV_DEBUG_PRINT
+									dev_debugprint("EventTimer. Move CR event to table")
+								#endif
 								event_table_cr(event_cr(i_index).time, event_cr(i_index).card, event_cr(i_index).direction)
 								event_cr(i_index).status = EN_ET_EMPTY
 								event_cr_send(j).index = -1
@@ -289,6 +313,9 @@ sub event_add(source as EN_EVENT_SOURCE, evnt as EN_EVENT_EVENT, addition as str
 		' Store event to ACE Array if ACE Array is not full
 		for i = 0 to EVENTS_ACE_COUNT - 1
 			if event_ace(i).status = EN_ET_EMPTY then
+				#if DEV_DEBUG_PRINT
+					dev_debugprint("EventAddACE. Add ACE event to array")
+				#endif
 				event_global_id = event_global_id + 1
 				event_ace(i).status = EN_ET_ACTIVE
 				event_ace(i).id = event_global_id
@@ -306,6 +333,9 @@ sub event_add(source as EN_EVENT_SOURCE, evnt as EN_EVENT_EVENT, addition as str
 	#if EVENTS_PROCEDURE_TYPE = EVENT_TYPE_DYNAMIC
 			if i = EVENTS_ACE_COUNT then
 				' Array is full! Store to table
+				#if DEV_DEBUG_PRINT
+					dev_debugprint("EventAddACE. Add ACE event to table")
+				#endif
 				event_table_ace(time_req, source, evnt, addition, extra)
 			end if
 		else
@@ -313,6 +343,9 @@ sub event_add(source as EN_EVENT_SOURCE, evnt as EN_EVENT_EVENT, addition as str
 
 	#if EVENTS_PROCEDURE_TYPE = EVENT_TYPE_STANDART or EVENTS_PROCEDURE_TYPE = EVENT_TYPE_DYNAMIC
 	'	Standart fire event schema
+		#if DEV_DEBUG_PRINT
+			dev_debugprint("EventAddACE. STD Add ACE event to table")
+		#endif
 		event_table_ace(time_req, source, evnt, addition, extra)
 	#endif
 
@@ -345,6 +378,9 @@ sub event_time(card_id as string(16), direction as EN_TA_DIRECTION_TYPE)
 		' Store event to CR Array if CR Array is not full
 		for i = 0 to EVENTS_CR_COUNT - 1
 			if event_cr(i).status = EN_ET_EMPTY then
+				#if DEV_DEBUG_PRINT
+					dev_debugprint("EventAddCR. Add CR event to array")
+				#endif
 				event_global_id = event_global_id + 1
 				event_cr(i).status = EN_ET_ACTIVE
 				event_cr(i).id = event_global_id
@@ -360,6 +396,9 @@ sub event_time(card_id as string(16), direction as EN_TA_DIRECTION_TYPE)
 	#if EVENTS_PROCEDURE_TYPE = EVENT_TYPE_DYNAMIC
 			if i = EVENTS_CR_COUNT then
 				' Array is full! Store to table
+				#if DEV_DEBUG_PRINT
+					dev_debugprint("EventAddCR. Add CR event to table")
+				#endif
 				event_table_cr(time_req, card_id, direction)
 			end if
 		else
@@ -367,6 +406,9 @@ sub event_time(card_id as string(16), direction as EN_TA_DIRECTION_TYPE)
 
 	#if EVENTS_PROCEDURE_TYPE = EVENT_TYPE_STANDART or EVENTS_PROCEDURE_TYPE = EVENT_TYPE_DYNAMIC
 	'	Standart fire event schema
+		#if DEV_DEBUG_PRINT
+			dev_debugprint("EventAddCR. STD Add CR event to table")
+		#endif
 		event_table_cr(time_req, card_id, direction)
 	#endif
 

@@ -7,18 +7,18 @@ Source code of Tibbo Access Control Firmware (Tibbo Basic)
 
 Current settings:
 	Project settings
-		DISPLAY			Enabled
-		WiFi 			Enabled
-		GPRS			Disable
+		Display					Enabled
+		WiFi 					Enabled
+		GPRS					Disable
 	
 	Serial settings
-		Wiegands number 	2
+		Wiegands number 		2
  
 	Relay settings
-		Relays number 		4
+		Relays number 			4
 
 	Pin settings
-		Pins number			8
+		Pins number				8
 
 	Event settings
-		Event standart 		0
+		Event procedure type 	2

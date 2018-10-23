@@ -379,7 +379,6 @@ function callback_agg_device_function(byref function_name as string ,byref conte
 		dim id as string
 		dim idi as long
 		id = agg_record_decode(function_input, 0)
-		agg_record_encode(function_output, id)
 		idi = lval(id)
 		' Array Events Confirm
 		event_confirm_agg(idi)
