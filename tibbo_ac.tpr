@@ -1,6 +1,6 @@
 [project]
 version=1
-platform=TPP3W(G2)
+platform=TPP2W(G2)
 src_lib_ver=2_00_04 AC
 name=tibbo_ac
 output=tibbo_ac_tpp3.tpc
@@ -58,7 +58,7 @@ address=0.24.77.80.40.136
 [address13]
 platform=TPP2W(G2)
 transport=udp_broadcast
-address=0.24.77.80.44.30
+address=0.36.119.82.191.246
 [address14]
 platform=TPP3W(G2)
 transport=udp_broadcast

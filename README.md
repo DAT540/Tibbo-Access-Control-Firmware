@@ -3,7 +3,7 @@
 Tibbo Technology 
 http://tibbo.com/solutions/access-control.html
 
-Source code of Tibbo Access Control Firmware (Tibbo Basic)
+Source code of Tibbo Access Control Firmware (Tibbo Basic) for TPS2G2
 
 Current settings:
 	Project settings

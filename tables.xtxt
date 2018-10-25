@@ -9,7 +9,7 @@
 >>Event	B	0	17	0
 >>Addition	S	0	15	^
 >>Extra	S	0	15	^
-==readers	4	T	1	List of readers
+==readers	2	T	1	List of readers
 >>name	S	0	5	^
 >>channel	B	0	4	^
 >>direction	B	0	2	0

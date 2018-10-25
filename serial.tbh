@@ -29,7 +29,7 @@ type T_SERIAL_READER
 
 end type
 
-const SERIALS_NUMBER = 4
+const SERIALS_NUMBER = 2
 declare readers_table_wait_init as byte
 declare readers(SERIALS_NUMBER) as T_SERIAL_READER
 declare param_rhc, param_rhl, param_pos, param_rfc as byte

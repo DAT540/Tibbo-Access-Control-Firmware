@@ -24,8 +24,8 @@ sub serial_init()
 	
 	serial_channel(0) = val(stg_get("NW", 0))
 	serial_channel(1) = val(stg_get("NW", 1))
-	serial_channel(2) = val(stg_get("NW", 2))
-	serial_channel(3) = val(stg_get("NW", 3))
+	if SERIALS_NUMBER > 2 then	serial_channel(2) = val(stg_get("NW", 2))
+	if SERIALS_NUMBER > 3 then	serial_channel(3) = val(stg_get("NW", 3))
 	
 	serial_mc = false
 	serial_mc_timer = 0

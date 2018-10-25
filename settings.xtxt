@@ -51,9 +51,9 @@
 >>AB	E	B	1	0	1	A	0
 >>YY	E	B	1	0	1	A	0
 >>MC	E	S	1	0	25	I	^	Master Card ID
->>NW	E	B	4	0	3	A	0/1/2/3	Serial channel for Wiegand
->>NI	E	B	16	0	55	A	32/33/4/20/34/35/5/21/36/37/6/22/38/39/7/23	Pin for Input
->>NR	E	B	4	0	55	A	24/25/28/29	Pin for Relay
+>>NW	E	B	2	0	3	A	0/1	Serial channel for Wiegand
+>>NI	E	B	8	0	55	A	13/12/2/18/15/14/3/19	Pin for Input
+>>NR	E	B	4	0	55	A	32/33/4/20	Pin for Relay
 >>EI	E	B	1	0	1	A	0	Events for INPUTs
 >>ER	E	B	1	0	1	A	0	Events for RELAYs
 >>EG	E	B	1	0	1	A	0	Events for AGG
