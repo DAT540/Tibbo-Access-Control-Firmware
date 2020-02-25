@@ -30,7 +30,7 @@ address=0.36.119.80.191.174
 [address6]
 platform=TPP2W
 transport=udp_broadcast
-address=0.36.119.81.213.176
+address=0.36.119.82.191.246
 [address7]
 platform=TPP3W
 transport=udp_broadcast
@@ -58,11 +58,11 @@ address=0.24.77.80.40.136
 [address13]
 platform=TPP2W(G2)
 transport=udp_broadcast
-address=0.36.119.82.191.246
+address=0.36.119.82.154.181
 [address14]
 platform=TPP3W(G2)
 transport=udp_broadcast
-address=0.36.119.82.191.240
+address=0.36.119.86.88.187
 [file1]
 path=main.tbs
 type=basic
@@ -124,7 +124,7 @@ path=dhcp\trunk\dhcp.tbh
 type=header
 format=
 condition=
-locked=yes
+locked=no
 location=commonlib
 [file10]
 path=wln\trunk\wln.tbs
