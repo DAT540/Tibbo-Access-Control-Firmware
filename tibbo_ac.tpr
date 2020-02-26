@@ -4,8 +4,8 @@ platform=TPP2W(G2)
 src_lib_ver=2_00_04 AC
 name=tibbo_ac
 output=tibbo_ac_tpp2.tpc
-debug=off
-defines=/dUSE_DNS=0 /dLCD_TYPE=SOLOMON_SSD1963_FIXED_IO2 /dUSE_SNTP=0 /dSUPPORTS=1 /dSUPPORT_HTML=0 /dOBJECT_LCD=LCD_DISABLED /dOBJECT_FD=FD_ENABLED /dNET_AVAILABLE=1 /dSUPPORTS_TABLE=1 /dSUPPORTS_DS=1 /dSUPPORTS_DISPLAY=0 /dOBJECT_KP=KP_DISABLED /dSUPPORTS_AGG=1 /dOBJECT_WLN=WLN_ENABLED
+debug=on
+defines= /dLCD_TYPE=SOLOMON_SSD1963_FIXED_IO2 /dUSE_DNS=0 /dUSE_SNTP=0 /dOBJECT_LCD=LCD_DISABLED /dSUPPORT_HTML=0 /dSUPPORTS=1 /dNET_AVAILABLE=1 /dOBJECT_FD=FD_ENABLED /dSUPPORTS_DS=1 /dSUPPORTS_TABLE=1 /dSUPPORTS_DISPLAY=0 /dOBJECT_KP=KP_DISABLED /dSUPPORTS_AGG=1 /dOBJECT_WLN=WLN_ENABLED
 transport=udp_broadcast
 [address1]
 platform=EM1206W
@@ -58,7 +58,7 @@ address=0.24.77.80.40.136
 [address13]
 platform=TPP2W(G2)
 transport=udp_broadcast
-address=0.36.119.82.154.181
+address=0.36.119.86.164.110
 [address14]
 platform=TPP3W(G2)
 transport=udp_broadcast
@@ -89,7 +89,7 @@ path=sock\trunk\sock.tbs
 type=basic
 format=
 condition=
-locked=yes
+locked=no
 location=commonlib
 [file5]
 path=sock\trunk\sock.tbh

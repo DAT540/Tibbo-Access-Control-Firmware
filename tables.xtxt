@@ -17,7 +17,7 @@
 >>enabled	B	0	1	1
 >>description	S	0	16	^
 ==cards	10000	T	0	List of tokens
->>index	W	0	65535	0
+>>index	W	0	10000	0
 >>id	S	0	16	^
 >>hash	B	0	255	^
 >>name	S	0	12	^
@@ -31,8 +31,8 @@
 >>deactDay	B	1	31	1
 >>deactHour	B	0	23	0
 >>deactMin	B	0	59	0
->>supervisor	W	0	65535	0
->>acl	W	0	65535	0
+>>supervisor	W	0	10000	0
+>>acl	W	0	1000	0
 ==tzones	200	T	0	List of time zones
 >>name	S	0	16	^
 >>fromTime	T	6	0	20000101010101001
@@ -43,7 +43,7 @@
 >>monthDays	U	0	2147483647	0
 >>weekDays	B	0	255	0
 ==acl	1000	T	0	List of ACL
->>index	W	0	65535	0
+>>index	W	0	1000	0
 >>acl	S	0	16	^
 >>reader	B	0	4	0
 >>timezone	S	0	16	^
